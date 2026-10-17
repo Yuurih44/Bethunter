@@ -1,0 +1,11 @@
+upgrade head => 0
+
+check => 0
+No new upgrade operations detected.
+
+downgrade 0004 => 0
+
+upgrade head => 0
+
+check => 0
+No new upgrade operations detected.

@@ -1,0 +1,80 @@
+name: BetHunter checks
+on: [push, pull_request]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: disposable-test-password
+          POSTGRES_DB: bethunter_test
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U postgres -d bethunter_test" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:disposable-test-password@localhost:5432/bethunter_test
+      BETHUNTER_ALLOW_TEST_DB_RESET: '1'
+      COOKIE_SECURE: 'false'
+      ORIGIN: http://localhost:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core postgresql-client
+      - run: pip install -r backend/requirements.txt
+      - run: cd backend && alembic upgrade head && alembic check
+      - run: pytest -q
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: cd frontend && npm ci --no-audit --no-fund && npm run build
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check backend/app scripts tests
+      - run: bandit -r backend/app -ll
+      - run: pip-audit -r backend/requirements.txt --progress-spinner off
+      - run: cd frontend && npm ci --no-audit --no-fund && npm audit --audit-level=high
+  compose-e2e:
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_PROJECT_NAME: bethunter_ci
+      AUTO_SETUP: 'false'
+      AUTO_OFFICIAL_SYNC: 'false'
+      BETHUNTER_E2E: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright pyotp
+      - run: python -m playwright install --with-deps chromium
+      - run: python3 scripts/configure.py
+      - run: docker compose config --quiet && docker compose build && docker compose up -d --wait
+      - run: curl --fail http://localhost:8080/api/health
+      - name: Seed explicit synthetic fixtures in disposable database
+        run: |
+          E2E_PASSWORD=$(openssl rand -hex 24)
+          echo "::add-mask::$E2E_PASSWORD"
+          echo "E2E_PASSWORD=$E2E_PASSWORD" >> "$GITHUB_ENV"
+          export E2E_PASSWORD
+          docker compose exec -T -e BETHUNTER_E2E -e E2E_PASSWORD backend python -m app.e2e_seed
+      - run: python e2e/smoke.py
+      - name: Verify runtime is unprivileged
+        run: docker compose exec -T backend python -c "from app.db import engine; from sqlalchemy import text; c=engine.connect(); assert c.execute(text('SELECT rolsuper FROM pg_roles WHERE rolname=current_user')).scalar() is False"
+      - if: always()
+        run: docker compose logs && docker compose down -v

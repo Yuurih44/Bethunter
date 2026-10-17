@@ -1,0 +1,5 @@
+# Optional public edge. Domain must resolve to the server before ACME can issue TLS.
+{$PUBLIC_HOSTNAME} {
+    reverse_proxy frontend:8080
+    header Strict-Transport-Security "max-age=31536000"
+}

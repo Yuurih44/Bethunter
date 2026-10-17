@@ -1,0 +1,210 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bethunter_bootstrap
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?Execute python3 scripts/configure.py}
+      POSTGRES_DB: bethunter
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U bethunter_bootstrap -d bethunter
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  backend:
+    build: &id001
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://bethunter_runtime:${APP_DATABASE_PASSWORD}@db:5432/bethunter
+      ORIGIN: ${ORIGIN:-http://localhost:8080}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      REGISTRATION_ENABLED: ${REGISTRATION_ENABLED:-true}
+      REGISTRATION_MODE: ${REGISTRATION_MODE:-invite}
+      AUTH_ENCRYPTION_KEY: ${AUTH_ENCRYPTION_KEY:?Configure AUTH_ENCRYPTION_KEY}
+      REQUIRE_MFA_ADMIN: ${REQUIRE_MFA_ADMIN:-true}
+      SESSION_HOURS: ${SESSION_HOURS:-8}
+      SESSION_IDLE_MINUTES: ${SESSION_IDLE_MINUTES:-30}
+      APP_ENV: ${APP_ENV:-development}
+      OFFICIAL_SOURCE_URL: ${OFFICIAL_SOURCE_URL:-https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/transparencia-ativa-processos-de-autorizacao-de-apostas-de-quota-fixa/empresas-autorizadas}
+      AUTO_SETUP: ${AUTO_SETUP:-true}
+      AUTO_OFFICIAL_SYNC: ${AUTO_OFFICIAL_SYNC:-true}
+      OFFICIAL_SYNC_HOURS: ${OFFICIAL_SYNC_HOURS:-6}
+      REGULATORY_NOTICE_MAX_HOURS: ${REGULATORY_NOTICE_MAX_HOURS:-24}
+      SOURCE_MAX_AGE_DAYS: ${SOURCE_MAX_AGE_DAYS:-7}
+      ENRICH_ASN: ${ENRICH_ASN:-false}
+      DISCOVERY_ALLOWED_HOSTS: ${DISCOVERY_ALLOWED_HOSTS:-raw.githubusercontent.com}
+      AUTO_ANALYSES_PER_DAY: ${AUTO_ANALYSES_PER_DAY:-100}
+      AUTO_ANALYSIS_DELAY_SECONDS: ${AUTO_ANALYSIS_DELAY_SECONDS:-30}
+      AUTO_QUEUE_LIMIT: ${AUTO_QUEUE_LIMIT:-1000}
+      SMTP_MODE: ${SMTP_MODE:-local}
+      SMTP_HOST: ${SMTP_HOST:-maildev}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-no-reply@bethunter.local}
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-true}
+      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-false}
+      MAIL_CAPTURE_DIR: /mail
+      BACKUP_ENCRYPTION_KEY: ${BACKUP_ENCRYPTION_KEY:?Configure BACKUP_ENCRYPTION_KEY}
+      BACKUP_DIR: /backups
+      REPORT_RETENTION_ENABLED: ${REPORT_RETENTION_ENABLED:-false}
+      TRUSTED_PROXY_IPS: ${COMPOSE_PROXY_IP:-172.29.0.10}
+      BACKUP_INTERVAL_HOURS: ${BACKUP_INTERVAL_HOURS:-24}
+      BACKUP_KEEP: ${BACKUP_KEEP:-7}
+      BACKUP_MAX_BYTES: ${BACKUP_MAX_BYTES:-256000000}
+      REPORT_STORAGE_LIMIT_MB: ${REPORT_STORAGE_LIMIT_MB:-100}
+      REPORT_MAX_SNAPSHOT_BYTES: ${REPORT_MAX_SNAPSHOT_BYTES:-2000000}
+      REPORT_MAX_PDF_BYTES: ${REPORT_MAX_PDF_BYTES:-5000000}
+      REPORT_MAX_HISTORY: ${REPORT_MAX_HISTORY:-50}
+      REPORT_RETENTION_DAYS: ${REPORT_RETENTION_DAYS:-90}
+      REPORT_MINIMUM_KEEP: ${REPORT_MINIMUM_KEEP:-3}
+      RAW_DOCUMENT_STORAGE_LIMIT_MB: ${RAW_DOCUMENT_STORAGE_LIMIT_MB:-100}
+      BACKLOG_ALERT_HOURS: ${BACKLOG_ALERT_HOURS:-48}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    restart: unless-stopped
+    volumes:
+    - mail_capture:/mail
+    - backup_data:/backups
+  worker:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    command:
+    - python
+    - -m
+    - app.worker
+    environment:
+      DATABASE_URL: postgresql+psycopg://bethunter_runtime:${APP_DATABASE_PASSWORD}@db:5432/bethunter
+      OFFICIAL_SOURCE_URL: ${OFFICIAL_SOURCE_URL:-https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/transparencia-ativa-processos-de-autorizacao-de-apostas-de-quota-fixa/empresas-autorizadas}
+      AUTO_SETUP: ${AUTO_SETUP:-true}
+      AUTO_OFFICIAL_SYNC: ${AUTO_OFFICIAL_SYNC:-true}
+      OFFICIAL_SYNC_HOURS: ${OFFICIAL_SYNC_HOURS:-6}
+      REGULATORY_NOTICE_MAX_HOURS: ${REGULATORY_NOTICE_MAX_HOURS:-24}
+      SOURCE_MAX_AGE_DAYS: ${SOURCE_MAX_AGE_DAYS:-7}
+      ENRICH_ASN: ${ENRICH_ASN:-false}
+      DISCOVERY_ALLOWED_HOSTS: ${DISCOVERY_ALLOWED_HOSTS:-raw.githubusercontent.com}
+      AUTO_ANALYSES_PER_DAY: ${AUTO_ANALYSES_PER_DAY:-100}
+      AUTO_ANALYSIS_DELAY_SECONDS: ${AUTO_ANALYSIS_DELAY_SECONDS:-30}
+      AUTO_QUEUE_LIMIT: ${AUTO_QUEUE_LIMIT:-1000}
+      AUTH_ENCRYPTION_KEY: ${AUTH_ENCRYPTION_KEY:?Configure AUTH_ENCRYPTION_KEY}
+      SMTP_MODE: ${SMTP_MODE:-local}
+      SMTP_HOST: ${SMTP_HOST:-maildev}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-no-reply@bethunter.local}
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-true}
+      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-false}
+      MAIL_CAPTURE_DIR: /mail
+      BACKUP_ENCRYPTION_KEY: ${BACKUP_ENCRYPTION_KEY:?Configure BACKUP_ENCRYPTION_KEY}
+      BACKUP_DIR: /backups
+      REPORT_RETENTION_ENABLED: ${REPORT_RETENTION_ENABLED:-false}
+      ORIGIN: ${ORIGIN:-http://localhost:8080}
+      BACKUP_INTERVAL_HOURS: ${BACKUP_INTERVAL_HOURS:-24}
+      BACKUP_KEEP: ${BACKUP_KEEP:-7}
+      BACKUP_MAX_BYTES: ${BACKUP_MAX_BYTES:-256000000}
+      REPORT_STORAGE_LIMIT_MB: ${REPORT_STORAGE_LIMIT_MB:-100}
+      REPORT_MAX_SNAPSHOT_BYTES: ${REPORT_MAX_SNAPSHOT_BYTES:-2000000}
+      REPORT_MAX_PDF_BYTES: ${REPORT_MAX_PDF_BYTES:-5000000}
+      REPORT_MAX_HISTORY: ${REPORT_MAX_HISTORY:-50}
+      REPORT_RETENTION_DAYS: ${REPORT_RETENTION_DAYS:-90}
+      REPORT_MINIMUM_KEEP: ${REPORT_MINIMUM_KEEP:-3}
+      RAW_DOCUMENT_STORAGE_LIMIT_MB: ${RAW_DOCUMENT_STORAGE_LIMIT_MB:-100}
+      BACKLOG_ALERT_HOURS: ${BACKLOG_ALERT_HOURS:-48}
+      APP_ENV: ${APP_ENV:-development}
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+    - mail_capture:/mail
+    - backup_data:/backups
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -m
+      - app.healthcheck
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+    - 127.0.0.1:8080:8080
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      default:
+        ipv4_address: ${COMPOSE_PROXY_IP:-172.29.0.10}
+  provision:
+    build: *id001
+    command:
+    - python
+    - -m
+    - app.bootstrap
+    environment:
+      ADMIN_DATABASE_URL: postgresql+psycopg://bethunter_bootstrap:${POSTGRES_ADMIN_PASSWORD}@db:5432/bethunter
+      APP_DATABASE_PASSWORD: ${APP_DATABASE_PASSWORD:?Configure APP_DATABASE_PASSWORD}
+      MIGRATOR_PASSWORD: ${MIGRATOR_PASSWORD:?Configure MIGRATOR_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+  migrate:
+    build: *id001
+    command:
+    - python
+    - -m
+    - app.migrate
+    environment:
+      DATABASE_URL: postgresql+psycopg://bethunter_migrator:${MIGRATOR_PASSWORD}@db:5432/bethunter
+    depends_on:
+      provision:
+        condition: service_completed_successfully
+    restart: 'no'
+  maildev:
+    build: *id001
+    command:
+    - python
+    - -m
+    - app.maildev
+    - --host
+    - 0.0.0.0
+    - --directory
+    - /mail
+    volumes:
+    - mail_capture:/mail
+    ports:
+    - 127.0.0.1:1025:1025
+    restart: unless-stopped
+volumes:
+  postgres_data: null
+  mail_capture: {}
+  backup_data: {}
+networks:
+  default:
+    ipam:
+      config:
+      - subnet: ${COMPOSE_NETWORK_SUBNET:-172.29.0.0/24}

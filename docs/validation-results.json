@@ -1,0 +1,30 @@
+{
+  "scope": "Validação local; sem aprovação de produção",
+  "passed": {
+    "backend_tests": 179,
+    "frontend_build": true,
+    "python_syntax": true,
+    "yaml_parse": true,
+    "sqlite_migration_roundtrip": true
+  },
+  "skipped": {
+    "postgresql_tests": 2
+  },
+  "blocked": {
+    "postgresql_live": "OperationalError ao conectar na configuração nativa; sockets locais restritos",
+    "browser": "Playwright Chromium encerrou durante launch; página não aberta",
+    "nginx": "Sintaxe reconhecida; nginx -t falhou por socket 8080 não permitido",
+    "docker": "Docker e Podman ausentes",
+    "npm_audit": "EAI_AGAIN registry.npmjs.org; sem resultado de vulnerabilidades",
+    "python_audit": "Ruff/Bandit/pip-audit ausentes; instalação tentou e falhou",
+    "smtp_tls_external": "Sem provedor/domínio configurado e sem servidor acessível neste ambiente",
+    "postgresql_restore": "Depende de conexão PostgreSQL e alvo separado; conexão bloqueada"
+  },
+  "evidence": [
+    "test-results.txt",
+    "frontend-build.txt",
+    "migration-check.txt",
+    "nginx-check.txt",
+    "npm-audit.txt"
+  ]
+}
