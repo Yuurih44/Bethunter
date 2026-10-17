@@ -11,7 +11,7 @@ cd /home/kali/bethunter
 ./iniciar.sh status
 ```
 
-Acesse http://localhost:8080. O stop preserva o banco. Não use sudo. O iniciador prepara migrações e separa os papéis de runtime e migração. Segredos persistem em `.runtime/local.env`; não compartilhe esse arquivo. Este terminal do agente não permite abrir sockets: a nova versão não foi observada rodando aqui.
+Acesse http://localhost:8080. O stop preserva o banco. Não use sudo. O iniciador prepara migrações e separa os papéis de runtime e migração. Segredos persistem em `.runtime/local.env`; não compartilhe esse arquivo. A execução local passou a ser permitida e a aplicação foi iniciada e verificada; consulte VALIDATION.md.
 
 ## Email
 
@@ -78,3 +78,7 @@ Acesse **Notificações** na navegação para consultar avisos atuais do banco e
 Em cada caso, **Ver checklist de revisão** confere os registros atuais: domínios associados, existência e completude das últimas análises, coleta nas últimas 24h, evidências estruturadas, parecer humano e disponibilidade do contexto regulatório. A checagem não realiza nova coleta de rede, não certifica a qualidade do parecer ou legalidade e não bloqueia encerramento ou exportação. Uma pendência regulatória deve permanecer visível quando não houver contexto verificável. Dados e reconhecimentos são isolados por proprietário.
 
 Deduplicação de relatórios considera mudanças técnicas/regulatórias e correções dos pareceres incluídos. O checklist compara documento/versão do contexto usado na análise com o atual; datas futuras não contam como coleta recente. Reconhecer notificações não resolve a falha indicada.
+
+## Validação após atualização de dependências
+
+A versão revisada usa Tailwind 4 e o plugin @tailwindcss/postcss, WeasyPrint 70, cryptography 50 e pydantic-settings 2.14.2. Backups Fernet anteriores continuam compatíveis nos testes de restauração. O restore_check cria seu alvo a partir de template0; divergência de collation após atualização do sistema requer reconstrução de índices antes de atualizar os metadados da versão. Não apenas silencie o aviso. Veja postgres-collation.txt para a manutenção realizada na instalação local após backup verificado.

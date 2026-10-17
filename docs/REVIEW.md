@@ -1,3 +1,5 @@
+> Validação posterior: PostgreSQL real, backup/restore, navegador/Nginx e auditorias foram executados. Dependências vulneráveis e collation foram corrigidas; consulte [VALIDATION.md](VALIDATION.md). Os bloqueios abaixo descrevem o ambiente anterior.
+
 # Revisão técnica completa — 17/10/2026
 
 Revisão de código e verificações locais do backend, frontend, autenticação, coleta/SSRF, classificação, fontes, automação, relatórios, backups, migrações, iniciador, Compose e CI. Não é certificação de produção nem pentest externo.

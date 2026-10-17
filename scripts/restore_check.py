@@ -13,7 +13,7 @@ from app.backups import create_backup,restore_backup,validate_restore
 admin=Path(os.environ['BETHUNTER_ADMIN_SECRET_FILE']).read_text().strip()
 name=os.environ['BETHUNTER_RESTORE_TARGET']
 kwargs=dict(host='127.0.0.1',port=55432,dbname='postgres',user='bethunter_local_admin',password=admin,autocommit=True)
-with psycopg.connect(**kwargs) as c:c.execute(sql.SQL('CREATE DATABASE {} OWNER bethunter_migrator').format(sql.Identifier(name)))
+with psycopg.connect(**kwargs) as c:c.execute(sql.SQL('CREATE DATABASE {} WITH TEMPLATE template0 OWNER bethunter_migrator').format(sql.Identifier(name)))
 try:
     backup=create_backup()
     target='postgresql+psycopg://bethunter_migrator:'+os.environ['BETHUNTER_MIGRATOR_PASSWORD']+'@127.0.0.1:55432/'+name

@@ -1,10 +1,22 @@
-npm warn audit request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: getaddrinfo EAI_AGAIN registry.npmjs.org
-npm error audit endpoint returned an error
 {
-  "message": "request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: getaddrinfo EAI_AGAIN registry.npmjs.org",
-  "error": {
-    "summary": "",
-    "detail": ""
+  "auditReportVersion": 2,
+  "vulnerabilities": {},
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 77,
+      "dev": 152,
+      "optional": 76,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 228
+    }
   }
 }
-npm error A complete log of this run can be found in: /home/kali/.npm/_logs/2026-10-17T22_19_52_144Z-debug-0.log

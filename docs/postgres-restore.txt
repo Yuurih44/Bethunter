@@ -1,0 +1,1 @@
+Restauração verificada em alvo descartável; hashes de documentos/PDFs e segredos MFA validados. Banco da aplicação preservado.

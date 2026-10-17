@@ -1,3 +1,5 @@
+> Atualização: as restrições anteriores foram removidas. A validação atual, com PostgreSQL real, navegador e auditorias, está em [VALIDATION.md](VALIDATION.md). O texto abaixo preserva o histórico da fase restrita.
+
 # Verificação realizada
 
 Ambiente: Linux, Python 3.14.7, Node 24.22. Destino Compose/CI: Python 3.12, PostgreSQL 16 e Node 22. Resultados desta revisão:

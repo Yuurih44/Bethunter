@@ -1,4 +1,2 @@
-Checagem sintática: upstream local numérico e diretórios temporários adaptados ao sandbox. Não inicia proxy ou valida Docker/DNS.
-nginx: the configuration file /tmp/bethunter-nginx-validation-suecf6cw/nginx.conf syntax is ok
-nginx: [emerg] socket() 0.0.0.0:8080 failed (1: Operation not permitted)
-nginx: configuration file /tmp/bethunter-nginx-validation-suecf6cw/nginx.conf test failed
+nginx: the configuration file /home/kali/bethunter/.runtime/validation/nginx.conf syntax is ok
+nginx: configuration file /home/kali/bethunter/.runtime/validation/nginx.conf test is successful

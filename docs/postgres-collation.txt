@@ -1,0 +1,3 @@
+bethunter: índices reconstruídos; versão de collation atualizada; índices inválidos=0
+template1: índices reconstruídos; versão de collation atualizada; índices inválidos=0
+postgres: índices reconstruídos; versão de collation atualizada; índices inválidos=0

@@ -56,6 +56,7 @@ jobs:
       AUTO_SETUP: 'false'
       AUTO_OFFICIAL_SYNC: 'false'
       BETHUNTER_E2E: '1'
+      E2E_SCREENSHOT_DIR: artifacts/browser
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

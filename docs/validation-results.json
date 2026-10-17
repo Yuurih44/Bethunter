@@ -1,30 +1,45 @@
 {
-  "scope": "Validação local; sem aprovação de produção",
+  "scope": "Validação real após liberação do ambiente; não certifica produção",
   "passed": {
-    "backend_tests": 179,
-    "frontend_build": true,
-    "python_syntax": true,
-    "yaml_parse": true,
-    "sqlite_migration_roundtrip": true
+    "postgresql_18_tests": 181,
+    "postgresql_skipped": 0,
+    "postgresql_migration": true,
+    "postgresql_runtime_privileges": true,
+    "postgresql_restore": true,
+    "native_application_health": true,
+    "nginx_test_and_proxy": true,
+    "chromium_browser_e2e": true,
+    "mobile_layout_navigation": true,
+    "pdf_real_download": true,
+    "totp_real_flow": true,
+    "local_smtp_email_confirmation": true,
+    "external_dns_tls_http_example_org": true,
+    "ruff": true,
+    "bandit_medium_high_findings": 0,
+    "npm_known_vulnerabilities": 0,
+    "pip_known_vulnerabilities": 0,
+    "frontend_build": true
   },
-  "skipped": {
-    "postgresql_tests": 2
-  },
-  "blocked": {
-    "postgresql_live": "OperationalError ao conectar na configuração nativa; sockets locais restritos",
-    "browser": "Playwright Chromium encerrou durante launch; página não aberta",
-    "nginx": "Sintaxe reconhecida; nginx -t falhou por socket 8080 não permitido",
-    "docker": "Docker e Podman ausentes",
-    "npm_audit": "EAI_AGAIN registry.npmjs.org; sem resultado de vulnerabilidades",
-    "python_audit": "Ruff/Bandit/pip-audit ausentes; instalação tentou e falhou",
-    "smtp_tls_external": "Sem provedor/domínio configurado e sem servidor acessível neste ambiente",
-    "postgresql_restore": "Depende de conexão PostgreSQL e alvo separado; conexão bloqueada"
+  "fixed": [
+    "dependências vulneráveis atualizadas",
+    "collation nativa e índices atualizados após backup/restore",
+    "SQL estático para conferência de hashes",
+    "smoke PDF e espera do formulário MFA corrigidos"
+  ],
+  "pending": {
+    "docker_ci": "Correções locais serão enviadas para repetir GitHub Actions; Docker ausente localmente",
+    "external_smtp_and_public_https": "Exigem provedor/remetente/domínio configurados"
   },
   "evidence": [
-    "test-results.txt",
+    "postgres-tests.txt",
+    "postgres-restore.txt",
+    "postgres-collation.txt",
+    "browser-e2e.txt",
     "frontend-build.txt",
-    "migration-check.txt",
     "nginx-check.txt",
-    "npm-audit.txt"
+    "ruff-check.txt",
+    "bandit-audit.json",
+    "npm-audit.txt",
+    "pip-audit.json"
   ]
 }

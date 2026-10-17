@@ -129,8 +129,10 @@ def validate_restore(target_url,auth_key):
             for table,label in [('raw_documents','documents'),('reports','reports')]:
                 if table not in tables:continue
                 columns={c['name'] for c in inspector.get_columns(table)}
-                condition=" WHERE archived=false" if 'archived' in columns else ''
-                for row in conn.execute(text('SELECT content,sha256 FROM '+table+condition)):
+                if table=='raw_documents':query='SELECT content,sha256 FROM raw_documents'
+                elif 'archived' in columns:query='SELECT content,sha256 FROM reports WHERE archived=false'
+                else:query='SELECT content,sha256 FROM reports'
+                for row in conn.execute(text(query)):
                     if hashlib.sha256(row.content).hexdigest()!=row.sha256:raise RuntimeError('Hash de evidência restaurada não confere')
                     checks[label]+=1
             if 'users' in tables and 'mfa_secret' in {c['name'] for c in inspector.get_columns('users')}:

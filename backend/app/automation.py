@@ -58,7 +58,7 @@ def parse_feed(raw, format):
                 continue
             if format == 'hosts':
                 fields = line.split()
-                if len(fields) < 2 or fields[0] not in ('0.0.0.0', '127.0.0.1', '::'):
+                if len(fields) < 2 or fields[0] not in ('0.0.0.0', '127.0.0.1', '::'):  # nosec B104: dataset addresses, never a listener
                     raise ValueError('Formato hosts não reconhecido')
                 values.extend(fields[1:])
             else:

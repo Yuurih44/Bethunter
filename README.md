@@ -159,9 +159,9 @@ Uma coleta incompleta ou fonte indisponível permanece identificada. A plataform
 
 ## Testes e validação
 
-Última suíte local registrada: **179 testes aprovados e 2 testes PostgreSQL ignorados**. Build TypeScript/Vite, sintaxe Python e migrações SQLite passaram. Consulte os logs e as condições da execução em [VALIDATION.md](docs/VALIDATION.md).
+Última suíte local registrada: **181 testes aprovados em PostgreSQL real, sem testes ignorados**. Build TypeScript/Vite, sintaxe Python e migrações SQLite passaram. Consulte os logs e as condições da execução em [VALIDATION.md](docs/VALIDATION.md).
 
-Esses resultados não comprovam implantação validada em produção. PostgreSQL real, Docker, navegador, SMTP/TLS externo e auditorias de dependências ainda possuem verificações pendentes ou bloqueadas no ambiente usado para desenvolvimento. O workflow de CI está configurado; sua execução remota não foi observada.
+Esses resultados não comprovam implantação validada em produção. PostgreSQL, restauração, navegador com Nginx, MFA, PDF e SMTP local foram exercitados. Ruff/Bandit passaram; npm audit e pip-audit não apontaram vulnerabilidades conhecidas nas versões consultadas após atualização. SMTP externo e HTTPS público ainda exigem provedor/domínio. O CI remoto também é acompanhado; veja o relatório para o resultado por execução.
 
 ```bash
 # Na raiz, com dependências instaladas e banco de testes isolado:

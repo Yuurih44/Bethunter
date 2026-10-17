@@ -1,38 +1,36 @@
-# Validação final solicitada
+# Validação com rede e execução local liberadas
 
-A validação local foi repetida após as correções. **Não foi possível validar tudo em execução real neste ambiente.** O estado está registrado em validation-results.json.
+As restrições anteriores foram removidas e as verificações foram repetidas. Os resultados anteriores continuam históricos; esta validação os substitui nas áreas abaixo.
 
-| Verificação | Resultado |
+| Verificação | Resultado observado |
 |---|---|
-| Backend/API/segurança/regras/filas/PDF/backup SQLite | 179 passaram; 2 testes PostgreSQL ignorados; 21,65s |
-| TypeScript/Vite com dependências reais | Passou, 4,59s |
-| Sintaxe Python | Passou |
-| Parse YAML Compose/HTTPS/CI | Passou; não equivale a executar Compose |
-| Alembic upgrade/check/downgrade/reaplicação SQLite | Passou |
-| PostgreSQL ao vivo | Tentativa de conexão falhou com OperationalError; sockets locais restritos |
-| Navegador Playwright | Chromium encerrou no lançamento; interface não validada visualmente |
-| Nginx | Parser reconheceu sintaxe; teste completo falhou ao criar socket 8080. Upstream foi adaptado para endereço numérico e caminhos temporários para esta checagem |
-| Docker/Podman | Ausentes; containers não construídos/iniciados |
-| npm audit | Falhou por EAI_AGAIN; sem resultado de vulnerabilidades |
-| Ruff/Bandit/pip-audit | Ausentes; tentativa normal de instalação falhou; não executados |
-| SMTP externo/TLS público | Não validados; exigem serviço/domínio configurados |
-| Restore PostgreSQL | Pendente; depende de PostgreSQL acessível e alvo separado |
+| Aplicação nativa | Iniciador executado, PostgreSQL/API/worker/frontend/SMTP local iniciados; dados preservados |
+| Suíte PostgreSQL 18 real | **181 passaram, sem ignorados**, 79,26s; TestClient normal, sem modo inline |
+| Migração PostgreSQL | Upgrade e alembic check passaram no cluster exclusivo de testes |
+| Privilégios | Runtime sem superusuário/criação de banco/papéis; teste rejeita DDL e exclusão de evidências |
+| Backup/restore PostgreSQL | Passou em alvo separado, com hashes/documentos/PDFs e segredo MFA conferidos |
+| Navegador Chromium + Nginx | Login, paginação, seleção de domínios entre páginas, caso, download de PDF, MFA, confirmação SMTP local, checklist, notificações e navegação móvel exercitados em banco sintético separado |
+| Nginx | nginx -t passou; proxy real usado pelo teste de navegador. Upstream/porta/caminhos adaptados à execução nativa |
+| Coleta pública externa | example.org: DNS público, TLS verificado, HTTP completo, 577 bytes, sem erros. Sem persistir análise de validação no banco real |
+| TypeScript/Vite | Passou após migração Tailwind 4 |
+| Ruff | Passou |
+| Bandit | Nenhum achado médio/alto após ajustes documentados |
+| npm audit | Zero vulnerabilidades conhecidas no relatório, incluindo dependências de desenvolvimento |
+| pip-audit | Zero vulnerabilidades conhecidas nas dependências resolvidas de requirements.txt |
+| Docker | Ausente localmente. GitHub Actions executou build/up/seed; smoke original falhou por teste desatualizado. Correções preparadas para repetir CI |
+| SMTP externo e HTTPS público | Não configurados: entrega na internet e certificado público da implantação não foram validados |
 
-O backend, worker, frontend e SMTP local não estavam acessíveis pelo terminal do agente. Não foi criado certificado, enviado email externo ou protocolada denúncia. Os PDFs da suíte foram renderizados de verdade, mas com dados sintéticos de teste. Serviços externos são mockados nessa suíte.
+## Erros expostos pela validação
 
-## Para concluir no host
+- Auditorias encontraram alertas na cadeia Tailwind 3 e em pydantic-settings 2.14.1, WeasyPrint 67 e cryptography 46. Atualizados para Tailwind/@tailwindcss-postcss 4.3.3, pydantic-settings 2.14.2, WeasyPrint 70 e cryptography 50; novas auditorias sem avisos conhecidos. Isso não comprova ausência de vulnerabilidades desconhecidas.
+- O PostgreSQL nativo tinha collation antiga após atualização da biblioteca do sistema. Após backup/restauração conferidos, os índices foram reconstruídos (concorrentemente no banco da aplicação), a versão de collation foi atualizada em bethunter/template1/postgres, e nenhum índice inválido permaneceu. Dados preservados. O restore_check também passou a usar template0 para seu alvo separado.
+- Bandit identificou um falso positivo em endereços de um dataset hosts (supressão somente B104, explicada no local). A consulta de conferência de hashes agora usa SQL estático em vez de concatenar nomes de tabelas.
+- O smoke E2E ainda buscava o botão antigo de enfileirar PDF; foi atualizado para verificar o download imediato e aguardar especificamente o formulário MFA antes de preencher a senha. A revisão ampliou cobertura de checklist/notificações e viewport móvel.
 
-No terminal normal do Kali:
+## Isolamento
 
-```bash
-cd /home/kali/bethunter
-./iniciar.sh
-./iniciar.sh status
-python3 scripts/restore_check.py
-```
+A suíte e o navegador usaram clusters/bancos exclusivos em .runtime/validation*, com fixtures claramente identificadas como demonstração. A conta original não recebeu dados sintéticos nem foi usada pelo navegador. Os servidores de teste são encerrados após o smoke. Capturas, senhas/chaves e bancos ficam fora do Git. O SMTP de teste captura localmente e não entrega emails pela internet.
 
-O restore_check cria e remove somente um alvo PostgreSQL temporário; preserva o banco da aplicação e gera uma cópia criptografada. Precisa dos serviços acessíveis e das chaves configuradas.
+Evidências: postgres-tests.txt, postgres-restore.txt, postgres-collation.txt, browser-e2e.txt, frontend-build.txt, nginx-check.txt, ruff-check.txt, bandit-audit.json, npm-audit.txt e pip-audit.json. Estes resultados não equivalem a pentest ou certificação de produção.
 
-Em ambiente com Docker, o workflow .github/workflows/tests.yml contém teste PostgreSQL e smoke Playwright em projeto Compose descartável com fixtures explicitamente sintéticas. Não execute seeds/testes destrutivos contra dados reais. A execução remota do workflow não foi observada aqui.
-
-Para ferramentas de qualidade, instale requirements-dev.txt em ambiente de desenvolvimento isolado e execute os comandos do job quality. Falhas de rede e ausência de ferramentas não são resultados de ausência de vulnerabilidades. Consulte REVIEW.md para os riscos restantes.
+A migração Tailwind segue a [documentação oficial](https://tailwindcss.com/docs/upgrade-guide), com plugin PostCSS próprio e import CSS. Requer navegador moderno.
