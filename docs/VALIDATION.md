@@ -17,7 +17,7 @@ As restrições anteriores foram removidas e as verificações foram repetidas. 
 | Bandit | Nenhum achado médio/alto após ajustes documentados |
 | npm audit | Zero vulnerabilidades conhecidas no relatório, incluindo dependências de desenvolvimento |
 | pip-audit | Zero vulnerabilidades conhecidas nas dependências resolvidas de requirements.txt |
-| Docker | Ausente localmente. GitHub Actions executou build/up/seed; smoke original falhou por teste desatualizado. Correções preparadas para repetir CI |
+| Docker | Validado no GitHub Actions: build, up/health, seed sintético, smoke Chromium e privilégios runtime passaram |
 | SMTP externo e HTTPS público | Não configurados: entrega na internet e certificado público da implantação não foram validados |
 
 ## Erros expostos pela validação
@@ -34,3 +34,11 @@ A suíte e o navegador usaram clusters/bancos exclusivos em .runtime/validation*
 Evidências: postgres-tests.txt, postgres-restore.txt, postgres-collation.txt, browser-e2e.txt, frontend-build.txt, nginx-check.txt, ruff-check.txt, bandit-audit.json, npm-audit.txt e pip-audit.json. Estes resultados não equivalem a pentest ou certificação de produção.
 
 A migração Tailwind segue a [documentação oficial](https://tailwindcss.com/docs/upgrade-guide), com plugin PostCSS próprio e import CSS. Requer navegador moderno.
+
+## GitHub Actions confirmado
+
+A [execução 39075601322](https://github.com/Yuurih44/Bethunter/actions/runs/39075601322), commit ce6575b, terminou com sucesso nos quatro jobs: backend (PostgreSQL 16/Python 3.12), frontend, quality e compose-e2e. O teste Docker inclui build/up/health, navegador Chromium, PDF, MFA, SMTP local, checklist, notificações, viewport móvel e verificação do runtime sem superusuário. Resultado observado pela API oficial do GitHub e registrado em github-actions.json. Docker permanece ausente no host local; a validação de containers ocorreu no runner do GitHub.
+
+A aplicação nativa foi reiniciada com o código atual, e o iniciador confirmou API saudável e identidade de código atualizada. Os clusters de testes locais foram encerrados; o banco e os serviços da aplicação permanecem ativos. A conta existente mantém mínimo 50 para casos/PDFs automáticos; o perfil horário com mínimo 25 é aplicado pelo botão explícito de Descoberta, sem trocar silenciosamente as preferências da conta durante uma validação.
+
+Pendências: SMTP externo com remetente/provedor reais, certificado HTTPS público da implantação com domínio/DNS e avaliação de carga/precisão. Não se declara prontidão irrestrita para produção.

@@ -18,7 +18,10 @@
     "bandit_medium_high_findings": 0,
     "npm_known_vulnerabilities": 0,
     "pip_known_vulnerabilities": 0,
-    "frontend_build": true
+    "frontend_build": true,
+    "docker_compose_ci": true,
+    "github_actions_all_jobs": true,
+    "github_actions_run": "https://github.com/Yuurih44/Bethunter/actions/runs/39075601322"
   },
   "fixed": [
     "dependências vulneráveis atualizadas",
@@ -27,7 +30,6 @@
     "smoke PDF e espera do formulário MFA corrigidos"
   ],
   "pending": {
-    "docker_ci": "Correções locais serão enviadas para repetir GitHub Actions; Docker ausente localmente",
     "external_smtp_and_public_https": "Exigem provedor/remetente/domínio configurados"
   },
   "evidence": [
@@ -40,6 +42,7 @@
     "ruff-check.txt",
     "bandit-audit.json",
     "npm-audit.txt",
-    "pip-audit.json"
+    "pip-audit.json",
+    "github-actions.json"
   ]
 }

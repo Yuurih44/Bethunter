@@ -1,0 +1,24 @@
+{
+  "run_id": 39075601322,
+  "head_sha": "ce6575b87fc703041a84ed9b7dcc1586a30ae746",
+  "conclusion": "success",
+  "html_url": "https://github.com/Yuurih44/Bethunter/actions/runs/39075601322",
+  "jobs": [
+    {
+      "name": "backend",
+      "conclusion": "success"
+    },
+    {
+      "name": "compose-e2e",
+      "conclusion": "success"
+    },
+    {
+      "name": "quality",
+      "conclusion": "success"
+    },
+    {
+      "name": "frontend",
+      "conclusion": "success"
+    }
+  ]
+}
