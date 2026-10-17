@@ -152,3 +152,11 @@ PDF arquivado retorna 410. Fila não significa relatório concluído nem denúnc
 - GET /api/notifications: avisos atuais, PDFs recentes, quantidade não reconhecida e estado por usuário.
 - POST /api/notifications/acknowledge: JSON {notification_id}; só aceita identificador presente nos avisos da própria conta e registra auditoria sem duplicar reconhecimento. Não altera a causa do alerta.
 - GET /api/cases/{id}/checklist: verificações calculadas dos registros atuais; não realiza coleta externa nem modifica o caso. Retorna 404 para caso de outro proprietário.
+
+## Evidências e comparação técnica
+
+- GET /api/analyses/{id}/compare?previous_id=N: compara uma análise própria com a anterior do mesmo domínio; sem anterior retorna available=false. Referência cruzada ou de outra conta retorna 404.
+- POST /api/cases/{id}/evidence-export: exporta ZIP limitado com snapshot, documentos originais, README e manifesto SHA-256. 409 para hash divergente; 422 para escopo/tamanho excessivo; 429 para limite de exportação. A conclusão gera auditoria. Corpo pode ser vazio.
+- GET /api/reports/{id}/integrity: confere bytes armazenados do PDF; status verified, mismatch ou unavailable para bytes arquivados. Não verifica autenticidade ou arquivo externo.
+
+O PDF técnico usa template versionado technical-report-v2. Consulte TECHNICAL_REPORTS.md para limites, metodologia e verificação offline.

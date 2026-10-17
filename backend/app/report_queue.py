@@ -7,6 +7,7 @@ from fastapi import HTTPException
 from .models import (Case,CaseDomain,Domain,Analysis,Evidence,ReportJob,Report,Complaint,Audit,WorkflowRun,WorkflowPolicy,User,now)
 from .config import settings
 from .db import SessionLocal
+from .reports import TEMPLATE_VERSION
 
 
 def semantic_result(value):
@@ -46,14 +47,14 @@ def snapshot_for(db,case,automatic):
             'classification':last.classification if last else None,
             'semantic_result':semantic_result(result),
             'recorded_reviews':[{'analysis_id':a.id,'review':a.review} for a in rows if a.review]})
-    snapshot={'Caso':{'id':case.id,'title':case.title,'notes':case.notes,'status':case.status,'priority':case.priority},
+    snapshot={'Modelo do relatório':TEMPLATE_VERSION,'Caso':{'id':case.id,'title':case.title,'notes':case.notes,'status':case.status,'priority':case.priority},
         'Coleta do relatório':now().isoformat(),'Domínios e histórico':records,
         'Conclusão técnica':case.notes or 'Sem conclusão humana registrada',
         'Preparação':'Rascunho automático para revisão humana' if automatic else 'Preparado pelo analista',
         'Limitações':f'Até {cfg.report_max_history} análises recentes por domínio; contagens totais acima. Histórico completo preservado no banco. Fontes públicas, coleta pontual e revisão humana obrigatória. Não determina crime. Sem envio ou protocolo automático.'}
     encoded=json.dumps(snapshot,ensure_ascii=False,default=str).encode()
     if len(encoded)>cfg.report_max_snapshot_bytes:raise HTTPException(422,'Snapshot excede o limite. Reduza os domínios do caso ou o histórico incluído.')
-    fingerprint=hashlib.sha256(json.dumps({'case':snapshot['Caso'],'domains':signature,'automatic':automatic},sort_keys=True,default=str).encode()).hexdigest()
+    fingerprint=hashlib.sha256(json.dumps({'template':TEMPLATE_VERSION,'case':snapshot['Caso'],'domains':signature,'automatic':automatic},sort_keys=True,default=str).encode()).hexdigest()
     return snapshot,fingerprint
 
 

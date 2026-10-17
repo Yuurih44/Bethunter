@@ -1,5 +1,6 @@
 """Only public HTTPS/HTTP, DNS pinned on every hop; never inherit proxy env."""
 import asyncio
+import hashlib
 import ipaddress
 import re
 import ssl
@@ -88,8 +89,14 @@ async def certificate(host, ip):
     writer = None
     try:
         reader, writer = await asyncio.wait_for(asyncio.open_connection(ip,443,ssl=ssl.create_default_context(),server_hostname=host), timeout=6)
-        cert = writer.get_extra_info("ssl_object").getpeercert()
-        return {"issuer":str(cert.get("issuer")), "notBefore":cert.get("notBefore"), "notAfter":cert.get("notAfter"), "subjectAltName":cert.get("subjectAltName", [])}
+        connection=writer.get_extra_info("ssl_object")
+        cert=connection.getpeercert()
+        der=connection.getpeercert(binary_form=True)
+        return {"issuer":str(cert.get("issuer")),"subject":str(cert.get("subject")),
+                "serialNumber":cert.get("serialNumber"),"notBefore":cert.get("notBefore"),
+                "notAfter":cert.get("notAfter"),"subjectAltName":cert.get("subjectAltName", []),
+                "certificate_sha256":hashlib.sha256(der).hexdigest(),"peer_ip":ip,
+                "protocol":connection.version(),"cipher":connection.cipher()}
     finally:
         if writer:
             writer.close()

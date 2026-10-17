@@ -1,5 +1,6 @@
 """Real browser/API/worker smoke against a disposable Compose deployment."""
-import hashlib,os,re,time
+import hashlib,os,re,time,json
+from zipfile import ZipFile
 from pathlib import Path
 import pyotp
 from playwright.sync_api import sync_playwright,expect
@@ -29,6 +30,9 @@ with sync_playwright() as p:
         page.set_viewport_size({'width':1280,'height':720})
     page.get_by_role('link',name='Domínios',exact=True).click();expect(page.get_by_text('Página 1 de 2 · 55 registros')).to_be_visible()
     page.get_by_role('button',name='Próxima',exact=True).click();expect(page.get_by_text('Página 2 de 2 · 55 registros')).to_be_visible()
+    page.get_by_role('button',name='Detalhes',exact=True).first.click()
+    page.get_by_role('button',name='Comparar com análise anterior',exact=True).click()
+    expect(page.get_by_text('Não há análise anterior deste domínio para comparar',exact=True)).to_be_visible()
     page.get_by_role('link',name='Investigações',exact=True).click();page.get_by_role('button',name='Abrir caso').click()
     form=page.locator('form.case-form');form.get_by_label('Título',exact=True).fill('Caso E2E — demonstração')
     form.get_by_label('fixture-0054.example.org',exact=True).check();form.get_by_role('button',name='Próxima',exact=True).click()
@@ -36,6 +40,12 @@ with sync_playwright() as p:
     expect(page.get_by_text('2 domínios',exact=True)).to_be_visible()
     page.get_by_role('button',name='Ver checklist de revisão',exact=True).click()
     expect(page.get_by_role('heading',name=re.compile(r'\d+ verificações pendentes'))).to_be_visible()
+    with page.expect_download() as bundle:
+        page.get_by_role('button',name='Exportar pacote de evidências',exact=True).click()
+    with ZipFile(bundle.value.path()) as archive:
+        manifest=json.loads(archive.read('manifest.json'))
+        assert manifest['format']=='bethunter-evidence-v1'
+        for item in manifest['files']:assert hashlib.sha256(archive.read(item['path'])).hexdigest()==item['sha256']
     with page.expect_download() as immediate:
         page.get_by_role('button',name='Gerar e baixar PDF',exact=True).click()
     assert Path(immediate.value.path()).read_bytes().startswith(b'%PDF')
@@ -43,6 +53,8 @@ with sync_playwright() as p:
     expect(page.get_by_role('button',name='PDF',exact=True)).to_be_visible(timeout=90000)
     with page.expect_download() as download_info:page.get_by_role('button',name='PDF',exact=True).first.click()
     target=Path(download_info.value.path());assert target.read_bytes().startswith(b'%PDF')
+    page.get_by_role('button',name='Verificar integridade',exact=True).first.click()
+    expect(page.get_by_text('SHA-256 dos bytes preservados confere.',exact=False)).to_be_visible()
     page.get_by_role('link',name='Notificações',exact=True).click()
     pdf_notice=page.locator('section').filter(has=page.get_by_text(re.compile(r'PDF #\d+ disponível para o caso #\d+')))
     expect(pdf_notice).to_be_visible()
@@ -71,4 +83,4 @@ with sync_playwright() as p:
     expect(page.get_by_text('Email confirmado no modo local de teste.',exact=True)).to_be_visible()
     assert not errors,errors
     browser.close()
-print('E2E OK: login, inventory pagination, multi-page case selection, queued PDF download, MFA, local SMTP verification, case checklist and notifications.')
+print('E2E OK: login, inventory pagination, multi-page case selection, queued PDF download, MFA, local SMTP verification, case checklist, notifications, comparison, evidence ZIP and PDF integrity.')

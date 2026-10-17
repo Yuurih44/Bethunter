@@ -82,3 +82,7 @@ Deduplicação de relatórios considera mudanças técnicas/regulatórias e corr
 ## Validação após atualização de dependências
 
 A versão revisada usa Tailwind 4 e o plugin @tailwindcss/postcss, WeasyPrint 70, cryptography 50 e pydantic-settings 2.14.2. Backups Fernet anteriores continuam compatíveis nos testes de restauração. O restore_check cria seu alvo a partir de template0; divergência de collation após atualização do sistema requer reconstrução de índices antes de atualizar os metadados da versão. Não apenas silencie o aviso. Veja postgres-collation.txt para a manutenção realizada na instalação local após backup verificado.
+
+## Relatório técnico v2 e novas ferramentas
+
+Consulte [TECHNICAL_REPORTS.md](TECHNICAL_REPORTS.md) para PDF estruturado, comparação de análises, exportação com manifesto e verificação de hashes. Recursos anteriores permanecem disponíveis. Dados TLS adicionais exigem nova coleta; PDFs antigos não são alterados.

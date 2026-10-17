@@ -30,8 +30,8 @@ Este é um **projeto pessoal e independente**, em evolução. Não possui víncu
 | Fontes oficiais | Importação conservadora, registro de origem/data/hash, contexto regulatório e falhas explícitas |
 | Descoberta | Fontes públicas permitidas, CSV/JSON/domains/hosts, deduplicação, fila, cotas e agendamentos |
 | Threat Intelligence | Histórico das próprias coletas, relações domínio/IP/ASN e enriquecimento ASN opcional |
-| Investigações | Casos, domínios associados, notas, prioridade, status e checklist de revisão |
-| Relatórios | PDFs reais, snapshots, SHA-256, fila limitada e geração manual pela interface |
+| Investigações | Casos, checklist, comparação entre análises e pacote ZIP de evidências com manifesto SHA-256 |
+| Relatórios | PDF técnico estruturado, template versionado, snapshots, verificação de integridade e geração manual |
 | Operação | Diagnóstico de worker/fontes/cotas, alertas e notificações com reconhecimento auditado |
 | Contas | Convites, Argon2id, MFA TOTP, códigos de recuperação, sessões e recuperação por email |
 | Recuperação | Backups criptografados, restauração em alvo separado e retenção opcional de PDFs |
@@ -159,7 +159,7 @@ Uma coleta incompleta ou fonte indisponível permanece identificada. A plataform
 
 ## Testes e validação
 
-Última suíte local registrada: **181 testes aprovados em PostgreSQL real, sem testes ignorados**. Build TypeScript/Vite, sintaxe Python e migrações SQLite passaram. Consulte os logs e as condições da execução em [VALIDATION.md](docs/VALIDATION.md).
+Última suíte local registrada: **189 testes aprovados em PostgreSQL real, sem testes ignorados**. Build TypeScript/Vite, sintaxe Python e migrações SQLite passaram. Consulte os logs e as condições da execução em [VALIDATION.md](docs/VALIDATION.md).
 
 Esses resultados não comprovam implantação validada em produção. PostgreSQL, restauração, navegador com Nginx, MFA, PDF e SMTP local foram exercitados. Ruff/Bandit passaram; npm audit e pip-audit não apontaram vulnerabilidades conhecidas nas versões consultadas após atualização. SMTP externo e HTTPS público ainda exigem provedor/domínio. Os quatro jobs do [CI remoto](https://github.com/Yuurih44/Bethunter/actions/runs/39075601322) passaram, incluindo PostgreSQL 16 e navegador em Docker. Veja o relatório para o escopo e as limitações.
 
@@ -195,6 +195,7 @@ Use apenas fontes e acessos autorizados. Defina finalidade, retenção e proteç
 | Documento | Conteúdo |
 |---|---|
 | [Operação](docs/OPERATIONS.md) | Instalação, atualização, email, backups e HTTPS |
+| [Relatórios e evidências](docs/TECHNICAL_REPORTS.md) | Modelo técnico, comparação, ZIP e conferência offline |
 | [API](docs/API.md) | Rotas, autenticação e contratos |
 | [Arquitetura](docs/ARCHITECTURE.md) | Componentes e fluxos |
 | [Banco](database/README.md) | Tabelas e migrações |

@@ -4,10 +4,10 @@ A validação atual está em [VALIDATION.md](VALIDATION.md); o resumo estruturad
 
 | Evidência | Resultado |
 |---|---|
-| postgres-tests.txt | 181 testes aprovados em PostgreSQL 18, TestClient normal, sem ignorados, dependências atualizadas |
+| postgres-tests.txt | 189 testes aprovados em PostgreSQL 18, TestClient normal, sem ignorados, dependências atualizadas |
 | postgres-restore.txt | Restauração da base da instalação em alvo separado, com hashes e segredo MFA conferidos |
 | postgres-collation.txt | Índices reconstruídos e metadados de collation corrigidos; nenhum índice inválido |
-| browser-e2e.txt | Chromium/Nginx: login, paginação, caso, PDF, MFA, SMTP local, checklist e notificações; capturas móveis inspecionadas |
+| browser-e2e.txt | Chromium/Nginx: login, paginação, caso, PDF técnico, MFA, SMTP local, checklist, notificações, comparação, exportação ZIP e integridade; capturas móveis inspecionadas |
 | nginx-check.txt | Teste de configuração passou com porta/upstream/caminhos adaptados ao ambiente nativo |
 | frontend-build.txt | TypeScript e build Vite aprovados com Tailwind 4 |
 | ruff-check.txt | Verificação estática aprovada |

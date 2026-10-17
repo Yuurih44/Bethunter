@@ -5,7 +5,7 @@ As restrições anteriores foram removidas e as verificações foram repetidas. 
 | Verificação | Resultado observado |
 |---|---|
 | Aplicação nativa | Iniciador executado, PostgreSQL/API/worker/frontend/SMTP local iniciados; dados preservados |
-| Suíte PostgreSQL 18 real | **181 passaram, sem ignorados**, 79,26s; TestClient normal, sem modo inline |
+| Suíte PostgreSQL 18 real | **189 passaram, sem ignorados**, 90,87s; TestClient normal, sem modo inline |
 | Migração PostgreSQL | Upgrade e alembic check passaram no cluster exclusivo de testes |
 | Privilégios | Runtime sem superusuário/criação de banco/papéis; teste rejeita DDL e exclusão de evidências |
 | Backup/restore PostgreSQL | Passou em alvo separado, com hashes/documentos/PDFs e segredo MFA conferidos |
@@ -42,3 +42,7 @@ A [execução 39075601322](https://github.com/Yuurih44/Bethunter/actions/runs/39
 A aplicação nativa foi reiniciada com o código atual, e o iniciador confirmou API saudável e identidade de código atualizada. Os clusters de testes locais foram encerrados; o banco e os serviços da aplicação permanecem ativos. A conta existente mantém mínimo 50 para casos/PDFs automáticos; o perfil horário com mínimo 25 é aplicado pelo botão explícito de Descoberta, sem trocar silenciosamente as preferências da conta durante uma validação.
 
 Pendências: SMTP externo com remetente/provedor reais, certificado HTTPS público da implantação com domínio/DNS e avaliação de carga/precisão. Não se declara prontidão irrestrita para produção.
+
+## Relatório técnico e ferramentas de evidência
+
+O modelo technical-report-v2 passou em renderização PDF real e download no navegador. A validação também passou por comparação de análises, exportação ZIP com manifesto conferido e verificação de PDF armazenado. Oito testes novos cobrem mudanças técnicas, isolamento entre contas, hashes/tamanho de pacote, verificador offline, corrupção de documentos/registros e mudança de versão do template. A coleta TLS adicional foi conferida com certificado público de example.org. O modelo não preenche campos ausentes em análises antigas. Veja TECHNICAL_REPORTS.md.

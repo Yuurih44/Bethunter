@@ -42,6 +42,8 @@ from .operations import router as operations_router,dashboard_data
 app.include_router(operations_router)
 from .investigation_tools import router as investigation_router
 app.include_router(investigation_router)
+from .evidence_tools import router as evidence_router
+app.include_router(evidence_router)
 app.add_middleware(TrustedHostMiddleware,allowed_hosts=list({urlsplit(settings().origin).hostname,'localhost','127.0.0.1','[::1]'}))
 
 @app.middleware("http")

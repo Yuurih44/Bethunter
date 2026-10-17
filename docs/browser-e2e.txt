@@ -1,1 +1,1 @@
-E2E OK: login, inventory pagination, multi-page case selection, queued PDF download, MFA, local SMTP verification, case checklist and notifications.
+E2E OK: login, inventory pagination, multi-page case selection, queued PDF download, MFA, local SMTP verification, case checklist, notifications, comparison, evidence ZIP and PDF integrity.

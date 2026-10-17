@@ -45,6 +45,7 @@ import type {
 import "./style.css";
 import { AccountActions } from "./AccountActions";
 import { Pager } from "./Pager";
+import { AnalysisComparison, ReportIntegrity } from "./EvidenceTools";
 import { NotificationCenter, CaseChecklist } from "./InvestigationTools";
 import { AutomationHealth } from "./AutomationHealth";
 import { SecurityPage } from "./Security";
@@ -850,6 +851,11 @@ function Domains({ revision, act, busy }: { revision: number } & Actions) {
               </small>
             </section>
           )}
+          <AnalysisComparison
+            key={detail.id}
+            id={detail.id}
+            revision={revision}
+          />
           <h3>Fatores documentados</h3>
           {detail.result.factors.length ? (
             detail.result.factors.map((f) => (
@@ -1123,6 +1129,21 @@ function Cases({ revision, act, busy }: { revision: number } & Actions) {
             <h2>{c.title}</h2>
             <p>{c.notes || "Sem observações registradas."}</p>
             <CaseChecklist id={c.id} revision={revision} />
+            <button
+              type="button"
+              disabled={busy || !c.domain_ids.length}
+              onClick={() =>
+                act(() =>
+                  download(
+                    `/cases/${c.id}/evidence-export`,
+                    `bethunter-case-${c.id}-evidence.zip`,
+                    {},
+                  ),
+                )
+              }
+            >
+              Exportar pacote de evidências
+            </button>
             <div className="case-meta">
               <span>{c.domain_ids.length} domínios</span>
               <span>
@@ -1335,6 +1356,7 @@ function Reports({ revision, act, busy }: { revision: number } & Actions) {
                       <small className="block muted hash" title={r.sha256}>
                         SHA-256: {r.sha256.slice(0, 16)}…
                       </small>
+                      <ReportIntegrity id={r.id} revision={revision} />
                     </td>
                     <td>#{r.case_id}</td>
                     <td>{fmt(r.created)}</td>
