@@ -1,6 +1,6 @@
 # Evidências de verificação
 
-A validação atual está em [VALIDATION.md](VALIDATION.md); o resumo estruturado, em validation-results.json. A fase anterior tinha restrições de rede/sockets e não validou PostgreSQL, navegador ou Docker. Essas restrições foram removidas e as etapas abaixo foram efetivamente executadas.
+A validação atual está em [VALIDATION.md](VALIDATION.md); o resumo estruturado, em validation-results.json. Os registros abaixo identificam as verificações executadas e seus resultados.
 
 | Evidência | Resultado |
 |---|---|

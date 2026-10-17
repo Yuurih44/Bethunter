@@ -22,4 +22,4 @@ Também foram consideradas referências de Elastic Security e OpenCTI antes da e
 
 Os filtros do dashboard aplicam-se ao histórico temporal e às até oito análises mais recentes retornadas pela API. O inventário e a distribuição por score mostram o conjunto completo do usuário, explicitamente identificado. Não se apresenta uma lista parcial como histórico exaustivo.
 
-A interface compila com TypeScript/Vite e dependências reais do projeto. A inspeção visual em navegador nesta sessão permanece indisponível; a escolha da referência e o build não substituem esse teste.
+A interface possui build TypeScript/Vite e testes de navegador, incluindo navegação móvel. Consulte VALIDATION.md para o escopo da verificação visual e automatizada.

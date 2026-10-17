@@ -2,10 +2,10 @@
 
 ## Linux/Kali local
 
-Execute no terminal normal do computador:
+Na raiz do repositório:
 
 ```bash
-cd /home/kali/bethunter
+cd Bethunter
 ./iniciar.sh stop
 ./iniciar.sh
 ./iniciar.sh status
@@ -55,7 +55,7 @@ REPORT_RETENTION_ENABLED=false por padrão. Ative somente após testar restaura�
 
 ## HTTPS opcional
 
-Com domínio e DNS próprios, configure PUBLIC_HOSTNAME, ORIGIN=https://seu-dominio, COOKIE_SECURE=true e requisitos de produção acima, e use `docker compose -f docker-compose.yml -f docker-compose.https.yml up --build -d`. Caddy precisa alcançar portas 80/443. Exemplo usa rede 172.29.0.0/24; alteração exige ajustar IP do edge e confiança no Nginx. Nenhum certificado público ou entrega SMTP externa foi validado nesta sessão.
+Com domínio e DNS próprios, configure PUBLIC_HOSTNAME, ORIGIN=https://seu-dominio, COOKIE_SECURE=true e requisitos de produção acima, e use `docker compose -f docker-compose.yml -f docker-compose.https.yml up --build -d`. Caddy precisa alcançar portas 80/443. Exemplo usa rede 172.29.0.0/24; alteração exige ajustar IP do edge e confiança no Nginx. Certificado público e entrega SMTP externa precisam ser validados após configurar domínio e provedor.
 
 ## Verificação
 

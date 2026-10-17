@@ -1,5 +1,3 @@
-> Atualização: a implementação posterior adicionou SMTP/verificação/recuperação, papéis PostgreSQL separados, backups, paginação e fila PDF. Consulte [OPERATIONS.md](OPERATIONS.md) para o comportamento atual e [VERIFICATION.md](VERIFICATION.md) para validações e pendências. As observações históricas abaixo não substituem esses documentos.
-
 # Arquitetura e decisões
 
 ## Fronteiras

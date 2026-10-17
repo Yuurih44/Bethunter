@@ -1,5 +1,3 @@
-> Atualização: a implementação posterior adicionou SMTP/verificação/recuperação, papéis PostgreSQL separados, backups, paginação e fila PDF. Consulte [OPERATIONS.md](OPERATIONS.md) para o comportamento atual e [VERIFICATION.md](VERIFICATION.md) para validações e pendências. As observações históricas abaixo não substituem esses documentos.
-
 # API BetHunter
 
 Swagger em `/api/docs`, OpenAPI em `/api/openapi.json`. JSON UTF-8. Erros FastAPI usam `detail`; 401 sem sessão válida, 403 origem/CSRF/perfil inválido, 404 registro ausente ou de outro proprietário, 409 conflito, 422 entrada inválida, 429 limite e 504 coleta excedida.

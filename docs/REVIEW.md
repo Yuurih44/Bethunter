@@ -1,59 +1,44 @@
-> Validação posterior: PostgreSQL real, backup/restore, navegador/Nginx e auditorias foram executados. Dependências vulneráveis e collation foram corrigidas; consulte [VALIDATION.md](VALIDATION.md). Os bloqueios abaixo descrevem o ambiente anterior.
+# Revisão técnica
 
-# Revisão técnica completa — 17/10/2026
+A revisão cobre autenticação, autorização, coleta pública, SSRF, regras, automação, relatórios, evidências, recuperação e implantação. Os resultados verificáveis estão em [VALIDATION.md](VALIDATION.md). Não é uma certificação de produção nem um pentest externo.
 
-Revisão de código e verificações locais do backend, frontend, autenticação, coleta/SSRF, classificação, fontes, automação, relatórios, backups, migrações, iniciador, Compose e CI. Não é certificação de produção nem pentest externo.
+## Correções implementadas
 
-## Erros encontrados e corrigidos nesta revisão
-
-| Prioridade | Problema reproduzido / impacto | Correção |
+| Área | Problema | Correção |
 |---|---|---|
-| Alta quando retenção habilitada | O registro de backup concluído permitia arquivar PDFs mesmo se o arquivo tivesse sido removido | Retenção exige arquivo presente, tamanho limitado, data válida e SHA-256 correspondente; caso contrário preserva os bytes |
-| Média | Fingerprint de PDF ignorava mudança de certificado/infraestrutura/contexto e correção de parecer antigo; podia reutilizar PDF desatualizado | Assinatura inclui resultado técnico/regulatório significativo, classificação e pareceres incluídos, excluindo somente metadados voláteis de coleta |
-| Média | Checklist podia aprovar verificação regulatória usando uma análise vinculada a documento/versão anterior | Exige contexto verificado na análise com hash e versão iguais aos do contexto atual |
-| Média | Datas futuras eram aceitas como coleta recente no checklist | Janela de 24h agora também termina no instante atual |
-| Baixa | Normalização aceitava porta explícita zero por tratar zero como ausência de porta | Rejeita qualquer porta explicitamente diferente de 80/443 conforme o esquema |
+| Coleta | Coleta incompleta podia parecer ausência de indicadores | Estado de coleta e avaliação explícitos |
+| Scheduler | Erro de integridade invalidava a transação de controle | Savepoint preservando erro, cota e agendamento |
+| Automação | Monitoramentos podiam consumir toda a cota | Alternância entre fila e monitoramento |
+| Grafo | Observações antigas sobrescreviam recentes | Preservação da observação mais recente |
+| Testes | Fixture destrutiva podia apontar ao banco da aplicação | Nome de teste e autorização explícita para banco persistente |
+| TLS | Hosts no mesmo IP podiam compartilhar conexão | Conexão independente e SNI por salto |
+| Banco | Runtime recebia privilégios excessivos | Papéis separados para provisionamento, migração e runtime |
+| PDF | Deduplicação ignorava mudanças técnicas e pareceres anteriores | Assinatura do resultado significativo, revisões e versão do modelo |
+| Retenção | Registro de backup era aceito sem o arquivo correspondente | Presença, data, tamanho e hash exigidos antes de arquivar bytes |
+| Checklist | Contexto regulatório antigo e datas futuras podiam ser aceitos | Correspondência de documento/versão e janela temporal válida |
+| Validação de URL | Porta explícita zero não era recusada | Comparação explícita com as portas permitidas |
+| Dependências | Auditorias identificaram versões com alertas conhecidos | Atualização de dependências e novas auditorias aprovadas |
+| PostgreSQL local | Atualização do sistema alterou a versão de collation | Backup/restore conferido, reconstrução de índices e atualização dos metadados |
+| Evidências | Exportação precisava de conferência e limites | Manifesto SHA-256, validação dos registros/documentos e cotas de tamanho/concorrência |
 
-Os testes de deduplicação, contexto/data futura e retenção com arquivo ausente falharam antes da correção. Depois passaram, inclusive a suíte completa. A presença/hash de um backup não prova restaurabilidade; o exercício de restauração continua necessário.
+## Validação observada
 
-Outros ajustes: serialização por conta ao reconhecer notificações, para evitar reconhecimentos duplicados concorrentes em PostgreSQL; alertas administrativos passam a indicar arquivo de backup ausente ou vencido; contexto de build Docker exclui arquivos de banco, dumps e chaves privados. Não houve alteração de esquema nem exclusão de dados existentes.
+- **189 testes aprovados em PostgreSQL real, sem testes ignorados.**
+- Build TypeScript/Vite, Ruff e Bandit aprovados.
+- npm audit e pip-audit sem vulnerabilidades conhecidas nas versões consultadas.
+- Backup/restore em alvo separado, verificação de hashes e segredo MFA exercitados.
+- Chromium/Nginx: autenticação, navegação móvel, casos, PDF, MFA, SMTP local, notificações, comparação e pacote ZIP.
+- Os quatro jobs do GitHub Actions passaram, incluindo PostgreSQL 16 e Docker.
 
-## Resultado observado
+As fontes externas são mockadas na suíte determinística. Uma coleta documental separada confirmou DNS, TLS e HTTP públicos. O teste de navegador usa dados sintéticos identificados e banco isolado. As evidências e o commit validado estão documentados; resultados de uma execução não garantem versões futuras.
 
-- **179 testes passaram, 2 ignorados** (PostgreSQL indisponível), 21,59s.
-- TypeScript/Vite passaram com dependências reais; aplicação 179,80kB antes de gzip.
-- compileall passou; Compose, override HTTPS e CI têm YAML válido.
-- Alembic: upgrade 0005, check, downgrade 0004, upgrade/check passaram em SQLite temporário.
-- Dependências Python diretas instaladas coincidem com requirements.txt.
-- npm audit tentou consultar o serviço, mas falhou com EAI_AGAIN; sem diagnóstico de vulnerabilidades.
-- Ruff, Bandit, pip-audit e Docker ausentes. CI contém essas verificações, mas execução remota não observada.
+## Riscos e pendências
 
-Evidências: test-results.txt, frontend-build.txt, migration-check.txt e npm-audit.txt.
+1. **Implantação pública:** configurar e validar provedor SMTP real, remetente autorizado, domínio/DNS e HTTPS público. Confirmar política de acesso e recuperação de desastre.
+2. **Escala:** o MVP pressupõe um backend e um worker. Rate limiting é local ao processo; endpoints legados ainda possuem listagens amplas. Validar carga e concorrência antes de ampliar.
+3. **Precisão:** termos e ações em notícias podem gerar falsos positivos. Conteúdo JavaScript, CAPTCHA e geolocalização limitam a coleta. Falta um conjunto rotulado para medir precisão.
+4. **Fontes e regras:** formatos oficiais, vigência, escopo e exceções exigem acompanhamento. Ausência em lista e infraestrutura compartilhada não comprovam irregularidade.
+5. **Recuperação:** backups usam memória e têm limite padrão de 256 MB. Manter cópia externa e chave separada; repetir testes de restauração. A retenção permanece opcional.
+6. **Autenticidade:** auditoria não é WORM/assinada. Hashes conferem bytes, mas não comprovam autoria, veracidade ou cadeia de custódia certificada. O administrador do banco tem controle sobre os dados.
 
-## Áreas revisadas
-
-| Área | Controles / resultado da revisão | Limite da evidência |
-|---|---|---|
-| Autenticação e contas | Argon2id, sessões por hash, CSRF/origem, convites, TOTP/recuperação de uso único, email e reset preservando MFA, isolamento por conta | Testes em processo; SMTP externo e múltiplos processos não validados |
-| Coleta | DNS público, rejeição de redes reservadas, pinning por salto, verificação TLS, proxy de ambiente ignorado, limites de corpo/tempo, compressão recusada | Mocks; handshake e rotas externas não validados nesta revisão |
-| Regras e fontes | Ausência/falha/antiguidade não prova irregularidade; regras versionadas; score explicado; revisão humana | Parser oficial específico; revisão jurídica contínua necessária |
-| Automação | Fonte horária configurável, fila/cotas/pausas/retry, justiça entre fila e monitoramento e heartbeat | Não busca toda a internet; depende de fontes e serviço ativo |
-| PDF/evidências | Renderização real em subprocesso, limites, deduplicação corrigida, snapshot/hash, geração manual, cotas e retenção protegida | Subprocesso não é isolamento completo do sistema operacional |
-| Banco e recuperação | Migração congelada, papéis separados, privilégios de runtime e backup criptografado com chave MFA | Migração/restore SQLite reais; papéis e restore PostgreSQL pendentes |
-| Interface | Build completo, paginação, ações integradas, diagnósticos, notificações e checklist | Sem teste visual/browser nesta sessão |
-| Operação | Iniciador identifica versão, Compose/CI/HTTPS configurados, segredos excluídos do pacote | Sandbox bloqueia sockets e não iniciou o servidor |
-
-Logs locais inspecionados não continham tracebacks de backend/worker; havia falhas DNS/TLS nas coletas. Isso não comprova ausência de erros ou execução da nova versão.
-
-## Pendências e riscos restantes
-
-1. **P1: validação real de implantação.** Exercitar PostgreSQL, upgrade de cópia do banco existente, papéis mínimos, backup/restore, Compose, navegador, TLS e SMTP real. Não considerar pronto para exposição pública só pelos testes locais.
-2. **P1: auditorias de dependências/estática.** Reexecutar Ruff/Bandit/pip-audit/npm audit em ambiente com ferramentas e rede. Nenhum resultado de ausência de vulnerabilidades foi obtido.
-3. **P2: escala e concorrência.** MVP pressupõe um backend e um worker. Rate limiting permanece local ao processo; endpoints legados de relatórios/agendamentos carregam listagens amplas, embora a interface principal use paginação. Validar carga/locks PostgreSQL antes de ampliar.
-4. **P2: precisão e fontes.** Termos/ações em uma notícia ainda podem gerar falso positivo. Há limitação com páginas JavaScript, CAPTCHA, geolocalização e fontes indisponíveis; falta conjunto de avaliação rotulado de precisão. Caso/PDF automático não é conclusão jurídica.
-5. **P2: armazenamento e recuperação.** Backup criptografa em memória, com limite padrão de 256MB. Cópia local pode ser perdida com o host; manter cópia externa e chave separada. Hash não substitui teste de restauração. Retenção permanece desabilitada por padrão.
-6. **P3: evolução.** Auditoria não é WORM/assinada; administrador do banco tem controle. Não há CT/passive DNS completo, detector de imitação de marca ou casos colaborativos por equipe.
-
-## Correções anteriores preservadas
-
-Coleta incompleta sem classificação limpa indevida; scheduler com savepoint após erro de integridade; alternância da cota entre descoberta/monitoramento; grafo mantendo observação recente; proteção da fixture destrutiva contra banco real; conexões TLS separadas por hostname; papéis PostgreSQL separados; recuperação de email/MFA; fila/cotas PDF; paginação e diagnóstico; geração manual sem worker; fonte horária e limiar de caso/PDF explícitos por conta.
+Consulte [ROADMAP.md](ROADMAP.md) para evolução e [THREAT_MODEL.md](THREAT_MODEL.md) para os limites dos controles.

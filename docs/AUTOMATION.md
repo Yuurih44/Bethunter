@@ -1,5 +1,3 @@
-> Atualização: a implementação posterior adicionou SMTP/verificação/recuperação, papéis PostgreSQL separados, backups, paginação e fila PDF. Consulte [OPERATIONS.md](OPERATIONS.md) para o comportamento atual e [VERIFICATION.md](VERIFICATION.md) para validações e pendências. As observações históricas abaixo não substituem esses documentos.
-
 # Descoberta e análise automática
 
 A automação consulta listas públicas específicas, extrai candidatos, elimina duplicidades, registra origem e coloca candidatos na fila de análise. Não procura todos os domínios da internet, não gera nomes aleatórios, não faz varreduras de portas, não explora vulnerabilidades e não envia denúncias.
@@ -9,7 +7,7 @@ A automação consulta listas públicas específicas, extrai candidatos, elimina
 Atualize a aplicação preservando os dados:
 
 ```bash
-cd /home/kali/bethunter
+cd Bethunter
 ./iniciar.sh stop
 ./iniciar.sh
 ```
@@ -29,7 +27,7 @@ O worker começa a consultar em seu próximo ciclo; se estiver analisando outro 
 - [Licença MIT do projeto](https://github.com/StevenBlack/hosts/blob/master/license.txt).
 - [Origem das listas e licenças MIT descritas pelo mantenedor](https://github.com/StevenBlack/hosts/blob/master/alternates/gambling-only/readme.md).
 
-O raw foi aberto pela ferramenta de pesquisa nesta sessão; continha cabeçalho com data de atualização e registros reais em formato hosts. O backend não conseguiu efetuar sua própria coleta ao vivo no sandbox. Os resultados da pesquisa não foram importados como análises ou usados para preencher métricas da aplicação.
+O catálogo referencia o dataset público e sua licença. A consulta de uma fonte só gera registros após importação pelo backend; referências documentais não são usadas para preencher métricas ou simular análises.
 
 É uma lista comunitária internacional de conteúdo de apostas, com fontes voltadas também a outros países. Não comprova operação no Brasil, ausência de autorização, controle comum ou irregularidade. Sua presença não adiciona pontos de risco. A classificação continua dependente das observações técnicas e da situação regulatória explicitamente verificada ou não verificada.
 

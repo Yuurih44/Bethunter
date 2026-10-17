@@ -11,7 +11,7 @@ def test_launcher_detects_sandbox(monkeypatch):
     def blocked(*args,**kwargs):
         raise PermissionError('Operation not permitted')
     monkeypatch.setattr(launcher.socket,'socket',blocked)
-    with pytest.raises(RuntimeError,match='terminal normal'):
+    with pytest.raises(RuntimeError,match='não permite abrir portas locais'):
         launcher.check_ports()
 
 

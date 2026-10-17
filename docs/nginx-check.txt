@@ -1,2 +1,3 @@
-nginx: the configuration file /home/kali/bethunter/.runtime/validation/nginx.conf syntax is ok
-nginx: configuration file /home/kali/bethunter/.runtime/validation/nginx.conf test is successful
+Saída normalizada: caminho específico da instalação substituído por marcador.
+nginx: the configuration file <validation-directory>/nginx.conf syntax is ok
+nginx: configuration file <validation-directory>/nginx.conf test is successful

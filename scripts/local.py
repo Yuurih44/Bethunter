@@ -63,7 +63,7 @@ def check_ports():
                 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 sock.bind(('127.0.0.1', port))
         except PermissionError as exc:
-            raise RuntimeError('Este terminal bloqueia sockets locais. Execute ./iniciar.sh no terminal normal do Kali, fora do sandbox do agente.') from exc
+            raise RuntimeError('O ambiente de execução não permite abrir portas locais. Execute ./iniciar.sh diretamente no terminal do sistema.') from exc
         except OSError as exc:
             raise RuntimeError(f'Porta {port} indisponível: {exc}. Use ./iniciar.sh status e encerre uma execução anterior antes de iniciar.') from exc
 

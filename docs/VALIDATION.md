@@ -1,6 +1,6 @@
 # Validação com rede e execução local liberadas
 
-As restrições anteriores foram removidas e as verificações foram repetidas. Os resultados anteriores continuam históricos; esta validação os substitui nas áreas abaixo.
+Resultados de execução local e integração contínua. O escopo de cada verificação é indicado abaixo.
 
 | Verificação | Resultado observado |
 |---|---|
@@ -39,7 +39,7 @@ A migração Tailwind segue a [documentação oficial](https://tailwindcss.com/d
 
 A [execução 39076731836](https://github.com/Yuurih44/Bethunter/actions/runs/39076731836), commit 0ebfacd, terminou com sucesso nos quatro jobs: backend (PostgreSQL 16/Python 3.12), frontend, quality e compose-e2e. O teste Docker inclui build/up/health, navegador Chromium, PDF, MFA, SMTP local, checklist, notificações, viewport móvel e verificação do runtime sem superusuário. Resultado observado pela API oficial do GitHub e registrado em github-actions.json. Docker permanece ausente no host local; a validação de containers ocorreu no runner do GitHub.
 
-A aplicação nativa foi reiniciada com o código atual, e o iniciador confirmou API saudável e identidade de código atualizada. Os clusters de testes locais foram encerrados; o banco e os serviços da aplicação permanecem ativos. A conta existente mantém mínimo 50 para casos/PDFs automáticos; o perfil horário com mínimo 25 é aplicado pelo botão explícito de Descoberta, sem trocar silenciosamente as preferências da conta durante uma validação.
+O iniciador verifica a saúde da API e a identidade do código carregado. Os testes usam clusters separados da instalação principal. Contas de versões anteriores podem manter mínimo 50 para casos/PDFs; o perfil horário com mínimo 25 é aplicado explicitamente em Descoberta, preservando preferências até essa ação.
 
 Pendências: SMTP externo com remetente/provedor reais, certificado HTTPS público da implantação com domínio/DNS e avaliação de carga/precisão. Não se declara prontidão irrestrita para produção.
 

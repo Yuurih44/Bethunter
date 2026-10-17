@@ -1,15 +1,13 @@
-> Atualização: a implementação posterior adicionou SMTP/verificação/recuperação, papéis PostgreSQL separados, backups, paginação e fila PDF. Consulte [OPERATIONS.md](OPERATIONS.md) para o comportamento atual e [VERIFICATION.md](VERIFICATION.md) para validações e pendências. As observações históricas abaixo não substituem esses documentos.
-
 # Cadastro e segurança de contas
 
 O cadastro padrão é `REGISTRATION_MODE=invite`. Contas existentes continuam podendo entrar com a senha atual; a exigência de 15 caracteres se aplica a novos cadastros e trocas de senha. `closed` bloqueia cadastros. `open` é opção explícita de desenvolvimento e é rejeitada quando `APP_ENV=production`.
 
 ## Instalação local existente
 
-No terminal normal, sem sudo:
+No terminal do sistema, sem sudo:
 
 ```bash
-cd /home/kali/bethunter
+cd Bethunter
 ./iniciar.sh stop
 ./iniciar.sh
 ./iniciar.sh admin seu-email@exemplo.com

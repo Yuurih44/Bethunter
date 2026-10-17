@@ -1,5 +1,3 @@
-> Atualização: a implementação posterior adicionou SMTP/verificação/recuperação, papéis PostgreSQL separados, backups, paginação e fila PDF. Consulte [OPERATIONS.md](OPERATIONS.md) para o comportamento atual e [VERIFICATION.md](VERIFICATION.md) para validações e pendências. As observações históricas abaixo não substituem esses documentos.
-
 # Modelo de ameaças
 
 ## Ativos e atores
@@ -40,7 +38,7 @@ Fontes são limitadas por host configurado pelo operador, HTTPS obrigatório em 
 
 ## Controles adicionais de conta
 
-Convites não comprovam posse do email. O terminal do operador é a fronteira para provisionamento e recuperação excepcional de MFA. Segredos TOTP dependem da preservação da chave Fernet. Códigos e convites não entram em auditoria; somente hashes são persistidos. Consulte [SECURITY.md](SECURITY.md). Host e HTTPS são validados pela configuração; a sessão também expira por inatividade sem interação. Esses controles foram testados em processo, sem validação de concorrência PostgreSQL ao vivo nesta sessão.
+Convites não comprovam posse do email. O terminal do operador é a fronteira para provisionamento e recuperação excepcional de MFA. Segredos TOTP dependem da preservação da chave Fernet. Códigos e convites não entram em auditoria; somente hashes são persistidos. Consulte [SECURITY.md](SECURITY.md). Host e HTTPS são validados pela configuração; a sessão também expira por inatividade sem interação. Esses controles possuem testes automatizados em PostgreSQL; cargas concorrentes maiores ainda exigem avaliação específica.
 
 A reconciliação automática é habilitada por padrão e limitada por conta/lote/cota. Ela não aumenta a allowlist, não habilita contas inativas ou de leitura, não retoma itens pausados individualmente e não declara fontes como verificadas sem coleta. As tentativas automáticas da fila são limitadas a três, com espera crescente. Descoberta comunitária automática deve ser desligada com AUTO_SETUP se a política do operador exigir provisionamento manual; a pausa geral interrompe execução de tarefas da conta.
 

@@ -49,4 +49,4 @@ O adaptador `spa-alert-mp1394-2026-v1` reconhece o aviso explícito em cabeçalh
 
 A tabela usada passou para [a página de empresas](https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/transparencia-ativa-processos-de-autorizacao-de-apostas-de-quota-fixa/empresas-autorizadas). Ela é documental/histórica e não basta para declarar autorização atual. O contexto é armazenado separadamente; a presença histórica nunca cria um veredito de legalidade. Termos de apostas com alerta oficial geram somente possível incompatibilidade para revisão de atividade, território e exceções. Sem termos observados, o enquadramento continua não confirmado.
 
-A pesquisa web confirmou as páginas oficiais nesta sessão. Isso não equivale a uma coleta HTTP executada pelo backend implantado; a integração foi testada com mocks.
+As URLs oficiais documentam a proveniência da integração. A verificação operacional depende da consulta registrada pelo backend; referências documentais não substituem uma coleta atual. A suíte usa mocks para testes determinísticos.
