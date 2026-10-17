@@ -37,7 +37,7 @@ A migração Tailwind segue a [documentação oficial](https://tailwindcss.com/d
 
 ## GitHub Actions confirmado
 
-A [execução 39075601322](https://github.com/Yuurih44/Bethunter/actions/runs/39075601322), commit ce6575b, terminou com sucesso nos quatro jobs: backend (PostgreSQL 16/Python 3.12), frontend, quality e compose-e2e. O teste Docker inclui build/up/health, navegador Chromium, PDF, MFA, SMTP local, checklist, notificações, viewport móvel e verificação do runtime sem superusuário. Resultado observado pela API oficial do GitHub e registrado em github-actions.json. Docker permanece ausente no host local; a validação de containers ocorreu no runner do GitHub.
+A [execução 39076731836](https://github.com/Yuurih44/Bethunter/actions/runs/39076731836), commit 0ebfacd, terminou com sucesso nos quatro jobs: backend (PostgreSQL 16/Python 3.12), frontend, quality e compose-e2e. O teste Docker inclui build/up/health, navegador Chromium, PDF, MFA, SMTP local, checklist, notificações, viewport móvel e verificação do runtime sem superusuário. Resultado observado pela API oficial do GitHub e registrado em github-actions.json. Docker permanece ausente no host local; a validação de containers ocorreu no runner do GitHub.
 
 A aplicação nativa foi reiniciada com o código atual, e o iniciador confirmou API saudável e identidade de código atualizada. Os clusters de testes locais foram encerrados; o banco e os serviços da aplicação permanecem ativos. A conta existente mantém mínimo 50 para casos/PDFs automáticos; o perfil horário com mínimo 25 é aplicado pelo botão explícito de Descoberta, sem trocar silenciosamente as preferências da conta durante uma validação.
 
@@ -46,3 +46,5 @@ Pendências: SMTP externo com remetente/provedor reais, certificado HTTPS públi
 ## Relatório técnico e ferramentas de evidência
 
 O modelo technical-report-v2 passou em renderização PDF real e download no navegador. A validação também passou por comparação de análises, exportação ZIP com manifesto conferido e verificação de PDF armazenado. Oito testes novos cobrem mudanças técnicas, isolamento entre contas, hashes/tamanho de pacote, verificador offline, corrupção de documentos/registros e mudança de versão do template. A coleta TLS adicional foi conferida com certificado público de example.org. O modelo não preenche campos ausentes em análises antigas. Veja TECHNICAL_REPORTS.md.
+
+A execução remota 39076731836 confirmou também o novo PDF técnico, comparação de análises, pacote ZIP e verificação de integridade. Os quatro jobs passaram. A prévia E2E foi renderizada em cinco páginas e suas seções foram conferidas por extração de texto e inspeção visual; dados explicitamente de demonstração.

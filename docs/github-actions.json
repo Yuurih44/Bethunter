@@ -1,9 +1,13 @@
 {
-  "run_id": 39075601322,
-  "head_sha": "ce6575b87fc703041a84ed9b7dcc1586a30ae746",
+  "run_id": 39076731836,
+  "head_sha": "0ebfacd635fcb8a1ea33e9ada9d1056cca7fa0e0",
   "conclusion": "success",
-  "html_url": "https://github.com/Yuurih44/Bethunter/actions/runs/39075601322",
+  "html_url": "https://github.com/Yuurih44/Bethunter/actions/runs/39076731836",
   "jobs": [
+    {
+      "name": "frontend",
+      "conclusion": "success"
+    },
     {
       "name": "backend",
       "conclusion": "success"
@@ -14,10 +18,6 @@
     },
     {
       "name": "quality",
-      "conclusion": "success"
-    },
-    {
-      "name": "frontend",
       "conclusion": "success"
     }
   ]

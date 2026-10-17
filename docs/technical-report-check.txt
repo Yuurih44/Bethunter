@@ -1,0 +1,1 @@
+PDF técnico E2E: 5 páginas. Texto de identificação, metodologia, TLS, histórico e limitações confirmado por extração. Primeira página renderizada e inspecionada localmente. Dados sintéticos identificados.

@@ -21,7 +21,7 @@
     "frontend_build": true,
     "docker_compose_ci": true,
     "github_actions_all_jobs": true,
-    "github_actions_run": "https://github.com/Yuurih44/Bethunter/actions/runs/39075601322",
+    "github_actions_run": "https://github.com/Yuurih44/Bethunter/actions/runs/39076731836",
     "technical_report_v2": true,
     "analysis_comparison": true,
     "evidence_zip_manifest": true,
@@ -36,8 +36,7 @@
     "smoke PDF e espera do formulário MFA corrigidos"
   ],
   "pending": {
-    "external_smtp_and_public_https": "Exigem provedor/remetente/domínio configurados",
-    "latest_feature_ci": "Aguardando nova execução do GitHub Actions para as ferramentas técnicas"
+    "external_smtp_and_public_https": "Exigem provedor/remetente/domínio configurados"
   },
   "evidence": [
     "postgres-tests.txt",
@@ -50,6 +49,7 @@
     "bandit-audit.json",
     "npm-audit.txt",
     "pip-audit.json",
-    "github-actions.json"
+    "github-actions.json",
+    "technical-report-check.txt"
   ]
 }
